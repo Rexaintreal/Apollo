@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Apollo Logo" width="250">
+  <img src="assets/apollo.png" alt="Apollo Logo" width="250">
 </p>
 <h1 align="center">Apollo <img src="assets/cat.png" alt="Apollo Cat" width="35"></h1>
 <p align="center">
