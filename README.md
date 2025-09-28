@@ -29,12 +29,10 @@ Apollo brings music to life on mobile devices. Its minimalist interface allows y
 Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
-
 ## ✨ Download & Links
 
-- **Website**: [Apollo Music](https://apollomusic.pythonanywhere.com/) - Download page for APK  
-- **APK Download**: Available for Android from the website  
-- **iOS**: Coming soon  
+- **[Download APK (v2.0)](https://apollomusic.pythonanywhere.com/)** – Latest Android release  
+- **iOS** – Coming soon  
 
 ---
 
@@ -119,12 +117,35 @@ Apollo/
 
 ---
 
-## ⚠️ Current Status
+## ⚡ What’s New (v2.0)
 
-- **Android APK**: Available now  
-- **iOS**: Coming soon  
+ApolloV2 is here with exciting new updates 🎉  
 
-Apollo is in active development. Feedback and contributions are welcome!
+- **Mini Player**: Control your music seamlessly while browsing the app  
+- **Customizable Settings**: More options to personalize your listening experience  
+- **UI Improvements**: Cleaner, smoother, and more polished design  
+- **Search Bar**: Quickly find your favorite songs  
+- **Error Handling**: Better stability and smoother user experience  
+
+<p align="center">
+  <a href="https://apollomusic.pythonanywhere.com/">
+    <img src="https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android" alt="Download APK">
+  </a>
+</p> 
+
+---
+
+## 📸 Screenshots (v2)
+
+<p align="center">
+  <img src="assets/screenshots/home_page_darkv2.png" alt="Home Page Dark" width="200">
+  <img src="assets/screenshots/song_page_darkv2.png" alt="Song Page Dark" width="200">
+  <img src="assets/screenshots/drawer_page_darkv2.png" alt="Drawer Dark" width="200">
+  <img src="assets/screenshots/settings_page_darkv2.png" alt="Settings Dark" width="200">
+</p>
+
+<p align="center"><em>New polished UI with Mini Player & Customizable Settings in v2.0</em></p>
+
 
 ---
 
