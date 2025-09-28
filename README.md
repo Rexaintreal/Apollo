@@ -5,7 +5,7 @@
 <p align="center">
 
 <p align="center">
-Apollo is a free, cross-platform music player built with Flutter for Android (APK available now) and iOS (coming soon). It features a clean, minimal UI, light and dark themes, support for local music files, and a playful cat that dances to the beat of your music. Apollo is designed to make music fun, interactive, and visually appealing on all devices.
+Apollo is a cross-platform music player for Android and iOS, featuring a clean and minimal UI, support for importing local files, light and dark themes, and a playful cat that dances to the beat while your music plays. (V2 offers UI enhancements, a mini player, a search bar, and more settings options.)
 </p>
 
 <p align="center">
