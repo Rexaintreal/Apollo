@@ -1,20 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:apollo/models/songs.dart';
+import 'package:path_provider/path_provider.dart';   
+import 'songs.dart';
 
 class PlaylistProvider extends ChangeNotifier {
-  // =========================
-  // P E R S I S T E N C E
-  // =========================
   static const _playlistKey = 'playlist_v1';
-  static const _currentIndexKey = 'current_index_v1';     
-  static const _shuffleKey = 'shuffle_v1';                
-  static const _repeatKey = 'repeat_v1';                  
+  static const _currentIndexKey = 'current_index_v1';
+  static const _shuffleKey = 'shuffle_v1';
+  static const _repeatKey = 'repeat_v1';
 
-  // playlist of songs (defaults initially)
   final List<Song> _playlist = [
     Song(
       songName: "Blinding Lights",
@@ -24,133 +22,124 @@ class PlaylistProvider extends ChangeNotifier {
     )
   ];
 
-
-  // current song index
   int? _currentSongIndex;
-
-  // shuffle and repeat modes
   bool _isShuffleMode = false;
   bool _isRepeatMode = false;
-
-  // shuffle history to avoid immediate repeats
   final List<int> _shuffleHistory = [];
   final Random _random = Random();
-
-  // audio player 
   final AudioPlayer _audioPlayer = AudioPlayer();
-
-  // durations 
   Duration _currentDuration = Duration.zero;
   Duration _totalDuration = Duration.zero;
-
-  // initially not playing
   bool isPlaying = false;
 
-  // constructor
   PlaylistProvider() {
     listenToDuration();
-    _loadFromDisk(); // <-- load saved state/playlist (replaces defaults if present)
+    _loadFromDisk();
   }
 
-  // =========================
-  // P E R S I S T : core
-  // =========================
+  // =======================
+  // PERSISTENCE
+  // =======================
   Future<void> _savePlaylistToDisk() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final jsonSongs = _playlist.map((s) => s.toJson()).toList();
-      await prefs.setString(_playlistKey, jsonEncode(jsonSongs));
-    } catch (_) {
-      // swallow errors; you can log if needed
-    }
+    final prefs = await SharedPreferences.getInstance();
+    final jsonSongs = _playlist.map((s) => s.toJson()).toList();
+    await prefs.setString(_playlistKey, jsonEncode(jsonSongs));
   }
 
   Future<void> _saveStateToDisk() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_currentIndexKey, _currentSongIndex ?? -1);
-      await prefs.setBool(_shuffleKey, _isShuffleMode);
-      await prefs.setBool(_repeatKey, _isRepeatMode);
-    } catch (_) {}
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_currentIndexKey, _currentSongIndex ?? -1);
+    await prefs.setBool(_shuffleKey, _isShuffleMode);
+    await prefs.setBool(_repeatKey, _isRepeatMode);
   }
 
   Future<void> _loadFromDisk() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      // Load playlist
-      final raw = prefs.getString(_playlistKey);
-      if (raw != null && raw.isNotEmpty) {
-        final List decoded = jsonDecode(raw) as List;
-        final loaded = decoded
-            .whereType<Map<String, dynamic>>()
-            .map((m) => Song.fromJson(m))
-            .toList();
-
-        // Replace defaults with saved
-        _playlist
-          ..clear()
-          ..addAll(loaded);
-      } else {
-        // First run after adding persistence: persist existing defaults
-        await _savePlaylistToDisk();
-      }
-
-      // Load optional state
-      final idx = prefs.getInt(_currentIndexKey) ?? -1;
-      _currentSongIndex = (idx >= 0 && idx < _playlist.length) ? idx : null;
-      _isShuffleMode = prefs.getBool(_shuffleKey) ?? false;
-      _isRepeatMode = prefs.getBool(_repeatKey) ?? false;
-
-      notifyListeners();
-    } catch (_) {
-      // If anything goes wrong, keep defaults
-      notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_playlistKey);
+    if (raw != null && raw.isNotEmpty) {
+      final List decoded = jsonDecode(raw) as List;
+      final loaded = decoded
+          .whereType<Map<String, dynamic>>()
+          .map((m) => Song.fromJson(m))
+          .toList();
+      _playlist
+        ..clear()
+        ..addAll(loaded);
+    } else {
+      await _savePlaylistToDisk();
     }
-  }
 
-  // Optional helper if you ever want a "Reset to defaults" button:
-  Future<void> resetToDefaults() async {
-    // (Re)build your defaults here if needed; we already have them in file.
-    await _savePlaylistToDisk();
-    await _saveStateToDisk();
+    final idx = prefs.getInt(_currentIndexKey) ?? -1;
+    _currentSongIndex = (idx >= 0 && idx < _playlist.length) ? idx : null;
+    _isShuffleMode = prefs.getBool(_shuffleKey) ?? false;
+    _isRepeatMode = prefs.getBool(_repeatKey) ?? false;
     notifyListeners();
   }
 
-  // =========================
-  // P L A Y L I S T  A P I
-  // =========================
-  Future<void> addSong(Song song) async {
-    _playlist.add(song);
+  // =======================
+  // PLAYLIST API
+  // =======================
+  /// Copy a temp file (from FilePicker) to a permanent location
+  Future<String> _persistPickedFile(String tempPath, String fileName) async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final savedPath = '${appDocDir.path}/$fileName';
+    final savedFile = await File(tempPath).copy(savedPath);
+    return savedFile.path;
+  }
+
+  /// Add a song; if [isTempFile] is true, copy to permanent folder first
+  Future<void> addSong(Song song, {bool isTempFile = false}) async {
+    String finalPath = song.audioPath;
+    if (isTempFile) {
+      // Extract just the filename if available
+      final name = song.audioPath.split('/').last;
+      finalPath = await _persistPickedFile(song.audioPath, name);
+    }
+
+    _playlist.add(
+      Song(
+        songName: song.songName,
+        artistName: song.artistName,
+        albumArtImagePath: song.albumArtImagePath,
+        audioPath: finalPath,
+      ),
+    );
+
     notifyListeners();
     await _savePlaylistToDisk();
   }
 
   Future<void> removeSong(int index) async {
-    if (index >= 0 && index < _playlist.length) {
-      if (_currentSongIndex == index) {
-        await _audioPlayer.stop();
-        _currentSongIndex = null;
-        isPlaying = false;
-      } else if (_currentSongIndex != null && _currentSongIndex! > index) {
-        _currentSongIndex = _currentSongIndex! - 1;
-      }
+    if (index < 0 || index >= _playlist.length) return;
 
-      _playlist.removeAt(index);
-      notifyListeners();
-      await _savePlaylistToDisk();
-      await _saveStateToDisk();
+    // delete imported file if it exists
+    final song = _playlist[index];
+    if (song.audioPath.startsWith('/')) {
+      final file = File(song.audioPath);
+      if (await file.exists()) await file.delete();
     }
+
+    if (_currentSongIndex == index) {
+      await _audioPlayer.stop();
+      _currentSongIndex = null;
+      isPlaying = false;
+    } else if (_currentSongIndex != null && _currentSongIndex! > index) {
+      _currentSongIndex = _currentSongIndex! - 1;
+    }
+
+    _playlist.removeAt(index);
+    notifyListeners();
+    await _savePlaylistToDisk();
+    await _saveStateToDisk();
   }
 
-  // =========================
-  // P L A Y E R  A P I
-  // =========================
+  // =======================
+  // PLAYER API
+  // =======================
   void play() async {
     final String path = _playlist[_currentSongIndex!].audioPath;
-    await _audioPlayer.stop(); // stop current song
+    await _audioPlayer.stop();
 
-    // file path vs asset path
     if (path.startsWith('/') || path.startsWith('file://')) {
       await _audioPlayer.play(DeviceFileSource(path));
     } else {
@@ -179,7 +168,6 @@ class PlaylistProvider extends ChangeNotifier {
     } else {
       resume();
     }
-    notifyListeners();
   }
 
   void seek(Duration position) async {
@@ -195,32 +183,25 @@ class PlaylistProvider extends ChangeNotifier {
         nextIndex = _random.nextInt(_playlist.length);
         attempts++;
       } while (nextIndex == _currentSongIndex && attempts < 10);
-
       _shuffleHistory.add(nextIndex);
       if (_shuffleHistory.length > _playlist.length ~/ 2) {
         _shuffleHistory.removeAt(0);
       }
-
       return nextIndex;
     } else {
-      if (_currentSongIndex! < _playlist.length - 1) {
-        return _currentSongIndex! + 1;
-      } else {
-        return 0;
-      }
+      return (_currentSongIndex! < _playlist.length - 1)
+          ? _currentSongIndex! + 1
+          : 0;
     }
   }
 
   int _getPreviousSongIndex() {
     if (_isShuffleMode && _shuffleHistory.isNotEmpty) {
-      int previousIndex = _shuffleHistory.removeLast();
-      return previousIndex;
+      return _shuffleHistory.removeLast();
     } else {
-      if (_currentSongIndex! > 0) {
-        return _currentSongIndex! - 1;
-      } else {
-        return _playlist.length - 1;
-      }
+      return (_currentSongIndex! > 0)
+          ? _currentSongIndex! - 1
+          : _playlist.length - 1;
     }
   }
 
@@ -235,7 +216,7 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
-  void playPreviousSong() async {
+  void playPreviousSong() {
     if (_currentDuration.inSeconds > 2) {
       seek(Duration.zero);
     } else {
@@ -245,31 +226,27 @@ class PlaylistProvider extends ChangeNotifier {
 
   void toggleShuffle() {
     _isShuffleMode = !_isShuffleMode;
-    if (!_isShuffleMode) {
-      _shuffleHistory.clear();
-    }
+    if (!_isShuffleMode) _shuffleHistory.clear();
     notifyListeners();
-    _saveStateToDisk(); 
+    _saveStateToDisk();
   }
 
   void toggleRepeat() {
     _isRepeatMode = !_isRepeatMode;
     notifyListeners();
-    _saveStateToDisk(); 
+    _saveStateToDisk();
   }
 
   void listenToDuration() {
-    _audioPlayer.onDurationChanged.listen((newDuration) {
-      _totalDuration = newDuration;
+    _audioPlayer.onDurationChanged.listen((d) {
+      _totalDuration = d;
       notifyListeners();
     });
-
-    _audioPlayer.onPositionChanged.listen((newPosition) {
-      _currentDuration = newPosition;
+    _audioPlayer.onPositionChanged.listen((p) {
+      _currentDuration = p;
       notifyListeners();
     });
-
-    _audioPlayer.onPlayerComplete.listen((event) {
+    _audioPlayer.onPlayerComplete.listen((_) {
       if (_isRepeatMode) {
         seek(Duration.zero);
         play();
@@ -285,9 +262,9 @@ class PlaylistProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  // =========================
-  // G E T T E R S
-  // =========================
+  // =======================
+  // GETTERS & SETTERS
+  // =======================
   List<Song> get playlist => _playlist;
   int? get currentSongIndex => _currentSongIndex;
   bool get isPlayingStatus => isPlaying;
@@ -296,16 +273,10 @@ class PlaylistProvider extends ChangeNotifier {
   bool get isShuffleMode => _isShuffleMode;
   bool get isRepeatMode => _isRepeatMode;
 
-  // =========================
-  // S E T T E R S
-  // =========================
   set currentSongIndex(int? newIndex) {
     _currentSongIndex = newIndex;
-
-    if (newIndex != null) {
-      play();
-    }
+    if (newIndex != null) play();
     notifyListeners();
-    _saveStateToDisk(); 
+    _saveStateToDisk();
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:apollo/models/playlist_provider.dart';
 import 'package:apollo/models/songs.dart';
 import 'package:apollo/pages/settings_page.dart';
+import 'package:url_launcher/url_launcher.dart'; 
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -85,6 +86,24 @@ class MyDrawer extends StatelessWidget {
               ),
 
               const Spacer(),
+
+              // Feedback → redirect to website
+              _drawerCard(
+                context,
+                icon: Icons.feedback_rounded, 
+                label: 'Send Feedback',
+                onTap: () async {
+                  final url = Uri.parse("https://saurabhcodesawfully.pythonanywhere.com/");
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Could not open link')),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -92,6 +111,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
+  // Matches HomePage look: Card + ListTile with rounded corners
   Widget _drawerCard(
     BuildContext context, {
     required IconData icon,

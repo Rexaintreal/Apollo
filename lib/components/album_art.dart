@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:apollo/models/songs.dart';
+import 'package:apollo/themes/theme_provider.dart';
 
 class AlbumArt extends StatelessWidget {
   final Song song;
@@ -11,48 +13,93 @@ class AlbumArt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final path = song.albumArtImagePath;
-
-    if (path.isEmpty) {
-      // no path → show default
-      return _defaultIcon();
-    }
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     ImageProvider? provider;
 
+    if (path.isEmpty) return _defaultIcon(isDark);
     if (path.startsWith('/') || path.startsWith('file://')) {
-      // imported file
       provider = FileImage(File(path.replaceFirst('file://', '')));
     } else if (path.startsWith('http')) {
-      // remote url
       provider = NetworkImage(path);
     } else {
-      // asset path
       provider = AssetImage(path);
     }
 
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image(
-          image: provider,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _defaultIcon(),
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: isDark ? Colors.black87 : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black54 : Colors.grey.withOpacity(0.3),
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
+        gradient: LinearGradient(
+          colors: isDark
+              ? [Colors.white.withOpacity(0.03), Colors.black.withOpacity(0.05)]
+              : [Colors.white.withOpacity(0.2), Colors.transparent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-      );
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image(
+              image: provider,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  _defaultIcon(isDark),
+            ),
+            // subtle shine overlay
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isDark
+                      ? [
+                          Colors.white.withOpacity(0.1),
+                          Colors.transparent
+                        ]
+                      : [
+                          Colors.white.withOpacity(0.3),
+                          Colors.transparent
+                        ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _defaultIcon() => Container(
+  Widget _defaultIcon(bool isDark) => Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(8),
+          color: isDark ? Colors.black87 : Colors.grey[200],
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: isDark ? Colors.black54 : Colors.grey.withOpacity(0.3),
+              blurRadius: 12,
+              offset: Offset(0, 6),
+            ),
+          ],
         ),
         child: Icon(
           Icons.music_note,
           size: size * 0.5,
-          color: Colors.grey,
+          color: isDark ? Colors.grey[400] : Colors.grey[700],
         ),
       );
 }

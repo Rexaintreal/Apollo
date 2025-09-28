@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 /// iOS Dark Mode Theme
 ThemeData darkMode = ThemeData(
   brightness: Brightness.dark,
-  scaffoldBackgroundColor: const Color(0xFF000000), 
+  scaffoldBackgroundColor: const Color(0xFF000000), // iOS systemBackground dark
   colorScheme: const ColorScheme.dark(
-    surface: Color(0xFF1C1C1E),      
+    surface: Color(0xFF1C1C1E),      // iOS secondarySystemBackground dark
     primary: Color(0xFF1C1C1E),
     secondary: Color(0xFF2C2C2E),
     inversePrimary: Color(0xFFFFFFFF),
-    tertiary: Color(0xFF0A84FF),    
+    tertiary: Color(0xFF0A84FF),     // iOS systemBlue dark
   ),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF000000),
@@ -25,7 +25,7 @@ ThemeData darkMode = ThemeData(
   ),
   textTheme: const TextTheme(
     bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
-    bodyMedium: TextStyle(color: Color(0xFFEBEBF5)), 
+    bodyMedium: TextStyle(color: Color(0xFFEBEBF5)), // iOS secondaryLabel dark
   ),
   cardTheme: const CardThemeData(
     color: Color(0xFF1C1C1E),
