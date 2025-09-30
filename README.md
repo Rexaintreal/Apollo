@@ -133,6 +133,15 @@ ApolloV2 is here with exciting new updates 🎉
   </a>
 </p> 
 
+## ⚡ What’s New (v2.5)
+
+Apollo V2.5 is here with even more fun updates 🎉  
+
+- **More Cats** 🐱: Added 10+ new cats to choose from  
+- **Customizable Cat Settings**: Adjust motion, opacity, and size of your dancing companion  
+- **Improved Settings Page**: Cleaner and more organized options  
+- **Bug Fixes & Performance Improvements**  
+
 ---
 
 ## 📸 Screenshots (v2)
