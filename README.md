@@ -18,7 +18,7 @@ Apollo is a cross-platform music player for Android and iOS, featuring a clean a
 
 ---
 
-## 🎵 Project Vision
+## Project Vision
 
 Apollo brings music to life on mobile devices. Its minimalist interface allows you to focus on your music while enjoying interactive features, such as:  
 
@@ -29,7 +29,7 @@ Apollo brings music to life on mobile devices. Its minimalist interface allows y
 Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
-## ✨ Download & Links
+## Download & Links
 
 - **[Download APK (v2.0)](https://apollomusic.pythonanywhere.com/)** – Latest Android release  
 - **iOS** – Coming soon  
@@ -51,7 +51,7 @@ Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
 
-## 🌟 Features
+## Features
 
 - **Cross-Platform**: Flutter-based app for Android and iOS (iOS coming soon)  
 - **Local Music Support**: Import and play your own music files  
@@ -62,7 +62,7 @@ Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
 
-## 🖥️ Technology Stack
+## Technology Stack
 
 - **Framework**: Flutter for cross-platform development  
 - **Programming Language**: Dart  
@@ -72,7 +72,7 @@ Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Flutter SDK 3.13+  
@@ -98,7 +98,7 @@ Apollo is free for everyone and provides a fun, immersive music experience.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 Apollo/
@@ -117,9 +117,9 @@ Apollo/
 
 ---
 
-## ⚡ What’s New (v2.0)
+## What’s New (v2.0)
 
-ApolloV2 is here with exciting new updates 🎉  
+ApolloV2 is here with exciting new updates  
 
 - **Mini Player**: Control your music seamlessly while browsing the app  
 - **Customizable Settings**: More options to personalize your listening experience  
@@ -133,18 +133,18 @@ ApolloV2 is here with exciting new updates 🎉
   </a>
 </p> 
 
-## ⚡ What’s New (v2.5)
+## What’s New (v2.5)
 
 Apollo V2.5 is here with even more fun updates 🎉  
 
-- **More Cats** 🐱: Added 10+ new cats to choose from  
+- **More Cats** : Added 10+ new cats to choose from  
 - **Customizable Cat Settings**: Adjust motion, opacity, and size of your dancing companion  
 - **Improved Settings Page**: Cleaner and more organized options  
 - **Bug Fixes & Performance Improvements**  
 
 ---
 
-## 📸 Screenshots (v2)
+## Screenshots (v2)
 
 <p align="center">
   <img src="assets/screenshots/home_page_darkv2.png" alt="Home Page Dark" width="200">
@@ -158,7 +158,7 @@ Apollo V2.5 is here with even more fun updates 🎉
 
 ---
 
-## 🔮 Future Plans
+## Future Plans
 
 - **iOS Release**: Full support for Apple devices  
 - **Playlist Management**: Create, edit, and share playlists  
@@ -168,7 +168,7 @@ Apollo V2.5 is here with even more fun updates 🎉
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!  
 
@@ -181,13 +181,13 @@ Contributions are welcome!
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).  
 
 ---
 
-## 💡 You may also like...
+## You may also like...
 
 - [Sorta](https://github.com/Rexaintreal/Sorta) - A Sorting Algorithm Visualizer
 - [Ziks](https://github.com/Rexaintreal/Ziks) - A physics simulator with 21 Simulatons made using vanilla JS
@@ -217,10 +217,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 👨‍💻 Author
+## uthor
 
 Apollo was created by **Saurabh Tiwari**  
 
-- 📧 Email: [saurabhtiwari7986@gmail.com](mailto:saurabhtiwari7986@gmail.com)  
-- 🐦 Twitter: [@Saurabhcodes01](https://x.com/Saurabhcodes01)
-- 📱 Instagram: [@saurabhcodesawfully](https://instagram.com/saurabhcodesawfully)
+- Email: [saurabhtiwari7986@gmail.com](mailto:saurabhtiwari7986@gmail.com)  
+- Twitter: [@Saurabhcodes01](https://x.com/Saurabhcodes01)
+- Instagram: [@saurabhcodesawfully](https://instagram.com/saurabhcodesawfully)
